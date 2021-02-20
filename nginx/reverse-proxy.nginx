@@ -1,0 +1,8 @@
+server {
+    listen 9992;
+    server_name 127.0.0.1;
+
+    location / {
+        proxy_pass http://127.0.0.1:9991;
+    }
+}

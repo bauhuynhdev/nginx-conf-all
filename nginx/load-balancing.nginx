@@ -1,0 +1,13 @@
+upstream load_balancer {
+    server 127.0.0.1:9991;
+    server 127.0.0.1:9992;
+}
+
+server {
+    listen 9993;
+    server_name 127.0.0.1;
+
+    location / {
+        proxy_pass http://load_balancer;
+    }
+}

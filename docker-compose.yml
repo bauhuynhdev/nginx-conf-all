@@ -1,0 +1,35 @@
+version: '3'
+
+networks:
+  common:
+    driver: bridge
+
+services:
+  nginx:
+    image: nginx:1.19
+    volumes:
+      - ./nginx/fastcgi.nginx:/etc/nginx/conf.d/fastcgi.conf
+      - ./nginx/reverse-proxy.nginx:/etc/nginx/conf.d/reverse-proxy.conf
+      - ./nginx/load-balancing.nginx:/etc/nginx/conf.d/load-balancing.conf
+    ports:
+      - 8080:9993
+    networks:
+      - common
+  php:
+#    image: php:7.3-fpm
+    build:
+      context: php
+    volumes:
+    - ./src:/var/www/web/
+    - ./php.ini:/usr/local/etc/php/php.ini
+    networks:
+      - common
+  mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: none
+      MYSQL_DATABASE: demo
+    networks:
+      - common
